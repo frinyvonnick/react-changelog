@@ -1,0 +1,1 @@
+export { ChangeLogModal } from './ChangeLogModal'
