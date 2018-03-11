@@ -56,12 +56,7 @@ function mockFetchingChangelog(component) {
 
 function mockFetch(url) {
   return {
-    text: () => {
-      const parts = url.split('/')
-      const filename = parts[parts.length - 1].split('.')[0]
-      const content = getChangelog(filename)
-      return Promise.resolve(content)
-    },
+    text: () => Promise.resolve(getChangelog(path.basename(url, '.md'))),
     ok: true,
   }
 }
