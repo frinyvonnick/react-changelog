@@ -11,14 +11,16 @@ import './ChangeLogModal.css'
 
 export default class ChangeLogModal extends Component {
   static propTypes = {
-    appElement: string.isRequired,
-    version: string.isRequired,
+    version: string,
+    appElement: string,
     url: string,
     title: string,
     changelog: string,
   }
 
   static defaultProps = {
+    version: undefined,
+    appElement: undefined,
     title: 'New things',
     url: undefined,
     changelog: undefined,
@@ -37,7 +39,9 @@ export default class ChangeLogModal extends Component {
 
   componentDidMount() {
     this.openModal()
-    ReactModal.setAppElement(this.props.appElement)
+    if (this.props.appElement) {
+      ReactModal.setAppElement(this.props.appElement)
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -87,6 +91,7 @@ ${group.map(feature => feature.body).join('')}
     return (
       <ReactModal
         isOpen={this.state.open}
+        ariaHideApp={!!this.props.appElement || false}
         onRequestClose={this.closeModal}
         className="modal"
         overlayClassName="overlay"

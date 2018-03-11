@@ -6,7 +6,7 @@
     "lint": "lerna run --stream lint"
   },
   "devDependencies": {
-    "lerna": "^2.9.0"
+    "lerna": "2.9.0"
   },
   "workspaces": [
     "packages/*"

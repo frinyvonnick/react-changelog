@@ -320,7 +320,10 @@ function (_Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.openModal();
-      ReactModal.setAppElement(this.props.appElement);
+
+      if (this.props.appElement) {
+        ReactModal.setAppElement(this.props.appElement);
+      }
     }
   }, {
     key: "componentWillReceiveProps",
@@ -337,6 +340,7 @@ function (_Component) {
           changelog = _props.changelog;
       return React__default.createElement(ReactModal, {
         isOpen: this.state.open,
+        ariaHideApp: !!this.props.appElement || false,
         onRequestClose: this.closeModal,
         className: "modal",
         overlayClassName: "overlay"
@@ -364,8 +368,8 @@ Object.defineProperty(ChangeLogModal, "propTypes", {
   enumerable: true,
   writable: true,
   value: {
-    appElement: propTypes.string.isRequired,
-    version: propTypes.string.isRequired,
+    version: propTypes.string,
+    appElement: propTypes.string,
     url: propTypes.string,
     title: propTypes.string,
     changelog: propTypes.string
@@ -376,6 +380,8 @@ Object.defineProperty(ChangeLogModal, "defaultProps", {
   enumerable: true,
   writable: true,
   value: {
+    version: undefined,
+    appElement: undefined,
     title: 'New things',
     url: undefined,
     changelog: undefined
