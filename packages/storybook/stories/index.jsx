@@ -13,60 +13,35 @@ stories.add('empty', () => (
 stories.add('with markdown as prop', () => (
   <LoadData url="/markdowns/basic.md">
     {changelog => (
-      <ChangeLogModal
-        appElement="#root"
-        changelog={changelog}
-      />
+      <ChangeLogModal changelog={changelog} />
     )}
   </LoadData>
 ))
 
 stories.add('with url', () => (
-  <ChangeLogModal
-    appElement="#root"
-    url="/markdowns/basic.md"
-  />
+  <ChangeLogModal url="/markdowns/basic.md" />
 ))
 
 stories.add('with image', () => (
-  <ChangeLogModal
-    appElement="#root"
-    url="/markdowns/image.md"
-  />
+  <ChangeLogModal url="/markdowns/image.md" />
 ))
 
 stories.add('with animated image', () => (
-  <ChangeLogModal
-    appElement="#root"
-    url="/markdowns/animated.md"
-  />
+  <ChangeLogModal url="/markdowns/animated.md" />
 ))
 
 stories.add('with long text', () => (
-  <ChangeLogModal
-    appElement="#root"
-    url="/markdowns/long.md"
-  />
+  <ChangeLogModal url="/markdowns/long.md" />
 ))
 
 stories.add('with multiple feature', () => (
-  <ChangeLogModal
-    appElement="#root"
-    url="/markdowns/multiple.md"
-  />
+  <ChangeLogModal url="/markdowns/multiple.md" />
 ))
 
 stories.add('filtering by version', () => (
-  <ChangeLogModal
-    appElement="#root"
-    version="3.0.1"
-    url="/markdowns/multiple.md"
-  />
+  <ChangeLogModal version="3.0.1" url="/markdowns/multiple.md" />
 ))
 
 stories.add('sorting by version', () => (
-  <ChangeLogModal
-    appElement="#root"
-    url="/markdowns/unordered.md"
-  />
+  <ChangeLogModal url="/markdowns/unordered.md" />
 ))
