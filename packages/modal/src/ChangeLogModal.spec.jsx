@@ -23,14 +23,14 @@ describe('ChangeLogModalContainer', () => {
   it('should passed changelog directly if provided', () => {
     component.setProps({ changelog })
 
-    expect(component.children().find({ changelog }).exists()).toBe(true)
+    expect(component.find(ChangeLogModal).prop('changelog')).toEqual(changelog)
   })
 
   it('should passed changelog directly if provided even if url is provided', () => {
     component.setProps({ changelog, url })
 
     expect(global.fetch).not.toHaveBeenCalled()
-    expect(component.children().find({ changelog }).exists()).toBe(true)
+    expect(component.find(ChangeLogModal).prop('changelog')).toEqual(changelog)
   })
 
   it('should fetch changelog if url is provided and changelog isn\'t', () => {
