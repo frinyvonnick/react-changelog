@@ -143,8 +143,7 @@ function _slicedToArray(arr, i) {
   }
 }
 
-var img = new Image();
-img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAsklEQVR4Ae2WsQrEIBAFH/iRUfN1yUnIRwoeuXKbc1CbsGM/g1ssK8dxXkxQ0aZedp0KTH+rqXYmdlU1XSRR1H6vKnbqn/dRN1HVJv7q7X95AutBIgE9INkE1/ME14NEBnpAtgmk5wmo54n5ejN1oOcJql8fWD8irq9mR03Xb4okwfUPKMH1NpGm6cGmHdXzBNfbRB7Sg007oJ+aOPv0JnGQw+vCh1dRWHk6HgpyHOe1fAE3Nwx9TaPILQAAAABJRU5ErkJggg==';
+var src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAsklEQVR4Ae2WsQrEIBAFH/iRUfN1yUnIRwoeuXKbc1CbsGM/g1ssK8dxXkxQ0aZedp0KTH+rqXYmdlU1XSRR1H6vKnbqn/dRN1HVJv7q7X95AutBIgE9INkE1/ME14NEBnpAtgmk5wmo54n5ejN1oOcJql8fWD8irq9mR03Xb4okwfUPKMH1NpGm6cGmHdXzBNfbRB7Sg007oJ+aOPv0JnGQw+vCh1dRWHk6HgpyHOe1fAE3Nwx9TaPILQAAAABJRU5ErkJggg==";
 
 function styleInject(css, ref) {
   if (ref === void 0) ref = {};
@@ -348,7 +347,7 @@ function (_Component) {
       }, React__default.createElement("span", null, title), React__default.createElement("button", {
         onClick: this.closeModal
       }, React__default.createElement("span", null, "Close"), React__default.createElement("img", {
-        src: img
+        src: src
       }))), React__default.createElement("div", {
         className: "content"
       }, React__default.createElement(Markdown, {

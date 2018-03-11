@@ -1,6 +1,6 @@
 import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
-import image from 'rollup-plugin-image'
+import image from 'rollup-plugin-img'
 import postcss from 'rollup-plugin-postcss'
 
 export default {
