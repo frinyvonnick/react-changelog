@@ -33,7 +33,7 @@ export default class ChangeLogModal extends Component {
 
   async componentWillMount() {
     if (this.props.url) {
-      this.fetchChangelog()
+      this.fetchChangelog(this.props.url)
     }
   }
 
@@ -45,13 +45,13 @@ export default class ChangeLogModal extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.url !== nextProps.url) {
-      this.fetchChangelog()
+    if (nextProps.url && this.props.url !== nextProps.url) {
+      this.fetchChangelog(nextProps.url)
     }
   }
 
-  fetchChangelog = async () => {
-    const res = await fetch(this.props.url)
+  fetchChangelog = async (url) => {
+    const res = await fetch(url)
     const changelog = await res.text()
     this.setState({ changelog })
   }
@@ -87,6 +87,7 @@ ${group.map(feature => feature.body).join('')}
 
   render() {
     const { title, changelog } = this.props
+    const formattedChangelog = this.formatMarkdown(changelog || this.state.changelog)
 
     return (
       <ReactModal
@@ -107,7 +108,7 @@ ${group.map(feature => feature.body).join('')}
         </div>
         <div className="content">
           <Markdown
-            source={this.formatMarkdown(changelog || this.state.changelog)}
+            source={formattedChangelog}
             escapeHtml={false}
           />
         </div>
