@@ -4,8 +4,15 @@ import Enzyme, { mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { readFileSync } from 'fs'
 import path from 'path'
+import ReactModal from 'react-modal'
 import ChangeLogModalContainer from './ChangeLogModal.container'
 import ChangeLogModal from './ChangeLogModal'
+
+jest.mock('react-modal', () => {
+  const actual = require.requireActual('react-modal')
+  actual.setAppElement = jest.fn()
+  return actual
+})
 
 Enzyme.configure({ adapter: new Adapter() })
 
@@ -18,6 +25,7 @@ describe('ChangeLogModalContainer', () => {
 
   beforeEach(() => {
     component = mount(<ChangeLogModalContainer />)
+    global.fetch.mockReset(() => ({ text: () => 'Some text' }))
   })
 
   it('should passed changelog directly if provided', () => {
@@ -38,6 +46,20 @@ describe('ChangeLogModalContainer', () => {
 
     expect(global.fetch).toHaveBeenCalledWith(url)
   })
+
+  it('should fetch changelog before mounting if url is provided at instanciation', () => {
+    component = mount(<ChangeLogModalContainer url={url} />)
+
+    expect(global.fetch).toHaveBeenCalledWith(url)
+  })
+
+  it('should refetch if url changes', () => {
+    component = mount(<ChangeLogModalContainer url={url} />)
+
+    component.setProps({ url: 'http://some-other-url.com' })
+
+    expect(global.fetch).toHaveBeenCalledTimes(2)
+  })
 })
 
 describe('ChangeLogModal', () => {
@@ -46,6 +68,28 @@ describe('ChangeLogModal', () => {
 
   beforeEach(() => {
     component = mount(<ChangeLogModal {...props} />)
+  })
+
+  it('should close when user click on close button', () => {
+    component.find('.header > button').simulate('click')
+
+    expect(component.find('.header').exists()).toBe(false)
+  })
+
+  it('should set app element in react-modal if appElement prop have been provided', () => {
+    // Disable console error from react-modal
+    jest.spyOn(console, 'error').mockImplementationOnce(() => {})
+    component = mount(<ChangeLogModal appElement="#root" />)
+
+    expect(ReactModal.setAppElement).toHaveBeenCalledWith('#root')
+  })
+
+  it('should set prop ariaHideApp to false if appElement isn\'t provided', () => {
+    expect(component.find({ ariaHideHidden: false }).exists()).toBe(false)
+  })
+
+  it('should set prop ariaHideApp to true if appElement is provided', () => {
+    expect(component.find({ ariaHideHidden: false }).exists()).toBe(false)
   })
 
   it('should display without error', () => {
