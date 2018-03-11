@@ -1,6 +1,9 @@
 {
   "private": true,
   "name": "react-changelog",
+  "scripts": {
+    "start": "lerna run --stream start"
+  },
   "devDependencies": {
     "lerna": "^2.9.0"
   },
