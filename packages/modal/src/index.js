@@ -1,1 +1,1 @@
-export { ChangeLogModal } from './ChangeLogModal'
+export { default } from './ChangeLogModal'

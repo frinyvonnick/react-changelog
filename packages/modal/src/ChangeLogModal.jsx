@@ -9,16 +9,18 @@ import cmp from 'semver-compare'
 import src from './close.png'
 import './ChangeLogModal.css'
 
-export class ChangeLogModal extends Component {
+export default class ChangeLogModal extends Component {
   static propTypes = {
     appElement: string.isRequired,
-    version: string,
+    version: string.isRequired,
+    url: string,
     title: string,
     changelog: string,
   }
 
   static defaultProps = {
     title: 'New things',
+    url: undefined,
     changelog: undefined,
   }
 
@@ -33,6 +35,11 @@ export class ChangeLogModal extends Component {
     }
   }
 
+  componentDidMount() {
+    this.openModal()
+    ReactModal.setAppElement(this.props.appElement)
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.url !== nextProps.url) {
       this.fetchChangelog()
@@ -45,16 +52,16 @@ export class ChangeLogModal extends Component {
     this.setState({ changelog })
   }
 
-  formatMarkdown = rawMarkdown => {
+  formatMarkdown = (rawMarkdown) => {
     const delimiter = '---'
     if (!rawMarkdown || !rawMarkdown.includes(delimiter)) return rawMarkdown
     const parts = chunk(rawMarkdown.split(delimiter).splice(1), 2).map(([metadata, body]) => `${delimiter}${metadata}${delimiter}${body}`)
 
     const fmFeatures = parts.map(fm)
 
-    const versions = groupBy(
+    const versionGroups = groupBy(
       fmFeatures
-        .filter(f => {
+        .filter((f) => {
           if (!this.props.version) return true
           if (cmp(f.attributes.version, this.props.version) > 0) return true
           return false
@@ -63,25 +70,18 @@ export class ChangeLogModal extends Component {
       f => f.attributes.version,
     )
 
-    return map(versions, (v, key) => {
-    return `
+    return map(versionGroups, (group, key) => `
 ### Version ${key}
 <hr>\n
-${v.map(v => v.body).join('')}
-`
-    }).join('')
-  }
-
-  componentDidMount() {
-    this.openModal()
-    ReactModal.setAppElement(this.props.appElement)
+${group.map(feature => feature.body).join('')}
+`).join('')
   }
 
   openModal = () => this.setState({ open: true })
 
   closeModal = () => this.setState({ open: false })
 
-  render () {
+  render() {
     const { title, changelog } = this.props
 
     return (
@@ -97,7 +97,7 @@ ${v.map(v => v.body).join('')}
             onClick={this.closeModal}
           >
             <span>Close</span>
-            <img src={src} />
+            <img alt="close icon" src={src} />
           </button>
         </div>
         <div className="content">

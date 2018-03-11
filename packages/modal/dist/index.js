@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var React = require('react');
@@ -256,7 +254,7 @@ function (_Component) {
           return "".concat(delimiter).concat(metadata).concat(delimiter).concat(body);
         });
         var fmFeatures = parts.map(fm);
-        var versions = lodash.groupBy(fmFeatures.filter(function (f) {
+        var versionGroups = lodash.groupBy(fmFeatures.filter(function (f) {
           if (!_this.props.version) return true;
           if (cmp(f.attributes.version, _this.props.version) > 0) return true;
           return false;
@@ -265,9 +263,9 @@ function (_Component) {
         }), function (f) {
           return f.attributes.version;
         });
-        return lodash.map(versions, function (v, key) {
-          return "\n### Version ".concat(key, "\n<hr>\n\n").concat(v.map(function (v) {
-            return v.body;
+        return lodash.map(versionGroups, function (group, key) {
+          return "\n### Version ".concat(key, "\n<hr>\n\n").concat(group.map(function (feature) {
+            return feature.body;
           }).join(''), "\n");
         }).join('');
       }
@@ -319,17 +317,17 @@ function (_Component) {
       };
     }()
   }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.openModal();
+      ReactModal.setAppElement(this.props.appElement);
+    }
+  }, {
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
       if (this.props.url !== nextProps.url) {
         this.fetchChangelog();
       }
-    }
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.openModal();
-      ReactModal.setAppElement(this.props.appElement);
     }
   }, {
     key: "render",
@@ -347,6 +345,7 @@ function (_Component) {
       }, React__default.createElement("span", null, title), React__default.createElement("button", {
         onClick: this.closeModal
       }, React__default.createElement("span", null, "Close"), React__default.createElement("img", {
+        alt: "close icon",
         src: src
       }))), React__default.createElement("div", {
         className: "content"
@@ -359,13 +358,15 @@ function (_Component) {
 
   return ChangeLogModal;
 }(React.Component);
+
 Object.defineProperty(ChangeLogModal, "propTypes", {
   configurable: true,
   enumerable: true,
   writable: true,
   value: {
     appElement: propTypes.string.isRequired,
-    version: propTypes.string,
+    version: propTypes.string.isRequired,
+    url: propTypes.string,
     title: propTypes.string,
     changelog: propTypes.string
   }
@@ -376,8 +377,9 @@ Object.defineProperty(ChangeLogModal, "defaultProps", {
   writable: true,
   value: {
     title: 'New things',
+    url: undefined,
     changelog: undefined
   }
 });
 
-exports.ChangeLogModal = ChangeLogModal;
+module.exports = ChangeLogModal;

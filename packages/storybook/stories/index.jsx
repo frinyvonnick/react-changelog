@@ -1,24 +1,8 @@
 import 'babel-polyfill'
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { action } from '@storybook/addon-actions'
-import { ChangeLogModal } from '@react-changelog/modal'
-
-class LoadData extends React.Component {
-  state = {
-    data: null
-  }
-
-  async componentDidMount() {
-    const res = await fetch(this.props.url)
-    const data = await res.text()
-    this.setState({ data })
-  }
-
-  render() {
-    return this.props.children(this.state.data)
-  }
-}
+import ChangeLogModal from '@react-changelog/modal'
+import LoadData from './LoadData'
 
 const stories = storiesOf('changelog modal', module)
 
