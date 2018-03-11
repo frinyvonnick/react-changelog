@@ -1,7 +1,8 @@
+import 'babel-polyfill'
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { ChangeLogModal } from '../src'
+import { ChangeLogModal } from '@react-changelog/modal'
 
 class LoadData extends React.Component {
   state = {

@@ -1,35 +1,10 @@
 {
+  "private": true,
   "name": "react-changelog",
-  "version": "0.0.1",
-  "description": "A changelog modal made in React",
-  "main": "index.js",
-  "scripts": {
-    "start": "concurrently \"yarn serve\" \"yarn storybook\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "start-storybook -p 9001 -c .storybook",
-    "serve": "cd ./stories && serve"
-  },
-  "author": "FRIN Yvonnick <yvonnick.frin@zenika.com>",
-  "license": "MIT",
   "devDependencies": {
-    "@storybook/react": "^3.3.15",
-    "concurrently": "^3.5.1",
-    "html-loader": "^0.5.5",
-    "http-proxy-middleware": "^0.17.4",
-    "markdown-loader": "^2.0.2",
-    "prop-types": "^15.6.1",
-    "serve": "^6.5.2"
+    "lerna": "^2.9.0"
   },
-  "dependencies": {
-    "babel-core": "^6.26.0",
-    "front-matter": "^2.3.0",
-    "lodash": "^4.17.5",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-markdown": "^3.3.0",
-    "semver-compare": "^1.0.0"
-  },
-  "peerDependencies": {
-    "react-modal": "^3.3.1"
-  }
+  "workspaces": [
+    "packages/*"
+  ]
 }
