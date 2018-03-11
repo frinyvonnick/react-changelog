@@ -69,6 +69,24 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function");
@@ -83,6 +101,32 @@ function _inherits(subClass, superClass) {
     }
   });
   if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
 }
 
 function _assertThisInitialized(self) {
@@ -196,49 +240,8 @@ function (_Component) {
       enumerable: true,
       writable: true,
       value: {
-        changelog: undefined,
         open: false
       }
-    }), Object.defineProperty(_assertThisInitialized(_this), "fetchChangelog", {
-      configurable: true,
-      enumerable: true,
-      writable: true,
-      value: function () {
-        var _value = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var res, changelog;
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return fetch(_this.props.url);
-
-                case 2:
-                  res = _context.sent;
-                  _context.next = 5;
-                  return res.text();
-
-                case 5:
-                  changelog = _context.sent;
-
-                  _this.setState({
-                    changelog: changelog
-                  });
-
-                case 7:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        return function value() {
-          return _value.apply(this, arguments);
-        };
-      }()
     }), Object.defineProperty(_assertThisInitialized(_this), "formatMarkdown", {
       configurable: true,
       enumerable: true,
@@ -291,32 +294,6 @@ function (_Component) {
   }
 
   _createClass(ChangeLogModal, [{
-    key: "componentWillMount",
-    value: function () {
-      var _componentWillMount = _asyncToGenerator(
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2() {
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                if (this.props.url) {
-                  this.fetchChangelog();
-                }
-
-              case 1:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      return function componentWillMount() {
-        return _componentWillMount.apply(this, arguments);
-      };
-    }()
-  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.openModal();
@@ -326,18 +303,12 @@ function (_Component) {
       }
     }
   }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      if (this.props.url !== nextProps.url) {
-        this.fetchChangelog();
-      }
-    }
-  }, {
     key: "render",
     value: function render() {
       var _props = this.props,
           title = _props.title,
           changelog = _props.changelog;
+      var formattedChangelog = this.formatMarkdown(changelog);
       return React__default.createElement(ReactModal, {
         isOpen: this.state.open,
         ariaHideApp: !!this.props.appElement || false,
@@ -354,7 +325,7 @@ function (_Component) {
       }))), React__default.createElement("div", {
         className: "content"
       }, React__default.createElement(Markdown, {
-        source: this.formatMarkdown(changelog || this.state.changelog),
+        source: formattedChangelog,
         escapeHtml: false
       })));
     }
@@ -370,7 +341,6 @@ Object.defineProperty(ChangeLogModal, "propTypes", {
   value: {
     version: propTypes.string,
     appElement: propTypes.string,
-    url: propTypes.string,
     title: propTypes.string,
     changelog: propTypes.string
   }
@@ -383,9 +353,142 @@ Object.defineProperty(ChangeLogModal, "defaultProps", {
     version: undefined,
     appElement: undefined,
     title: 'New things',
-    url: undefined,
     changelog: undefined
   }
 });
 
-module.exports = ChangeLogModal;
+var ChangeLogModalContainer =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(ChangeLogModalContainer, _Component);
+
+  function ChangeLogModalContainer() {
+    var _ref;
+
+    var _temp, _this;
+
+    _classCallCheck(this, ChangeLogModalContainer);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _possibleConstructorReturn(_this, (_temp = _this = _possibleConstructorReturn(this, (_ref = ChangeLogModalContainer.__proto__ || Object.getPrototypeOf(ChangeLogModalContainer)).call.apply(_ref, [this].concat(args))), Object.defineProperty(_assertThisInitialized(_this), "state", {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: {
+        changelog: undefined
+      }
+    }), Object.defineProperty(_assertThisInitialized(_this), "fetchChangelog", {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function () {
+        var _value = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee(url) {
+          var res, changelog;
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return fetch(url);
+
+                case 2:
+                  res = _context.sent;
+                  _context.next = 5;
+                  return res.text();
+
+                case 5:
+                  changelog = _context.sent;
+
+                  _this.setState({
+                    changelog: changelog
+                  });
+
+                case 7:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        }));
+
+        return function value(_x) {
+          return _value.apply(this, arguments);
+        };
+      }()
+    }), _temp));
+  }
+
+  _createClass(ChangeLogModalContainer, [{
+    key: "componentWillMount",
+    value: function () {
+      var _componentWillMount = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee2() {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (!this.props.changelog && this.props.url) {
+                  this.fetchChangelog(this.props.url);
+                }
+
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      return function componentWillMount() {
+        return _componentWillMount.apply(this, arguments);
+      };
+    }()
+  }, {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      if (!nextProps.changelog && nextProps.url && this.props.url !== nextProps.url) {
+        this.fetchChangelog(nextProps.url);
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _props = this.props,
+          changelog = _props.changelog,
+          props = _objectWithoutProperties(_props, ["changelog"]);
+
+      return React__default.createElement(ChangeLogModal, _extends({
+        changelog: changelog || this.state.changelog
+      }, props));
+    }
+  }]);
+
+  return ChangeLogModalContainer;
+}(React.Component);
+
+Object.defineProperty(ChangeLogModalContainer, "propTypes", {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  value: {
+    changelog: propTypes.string,
+    url: propTypes.string
+  }
+});
+Object.defineProperty(ChangeLogModalContainer, "defaultProps", {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  value: {
+    changelog: undefined,
+    url: undefined
+  }
+});
+
+module.exports = ChangeLogModalContainer;
