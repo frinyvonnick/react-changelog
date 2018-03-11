@@ -57,6 +57,33 @@ describe('ChangeLogModal', () => {
 
     expect(component.contains('Some brand new feature')).toBe(true)
   })
+
+  it('should handle front-matter meta data and display version', () => {
+    component.setProps({ changelog: getChangelog('multiple') })
+
+    expect(component.contains('Version 3.0.1')).toBe(true)
+    expect(component.contains('Version 3.0.2')).toBe(true)
+  })
+
+  it('should group features by version', () => {
+    component.setProps({ changelog: getChangelog('unordered') })
+
+    expect(component.find({ version: '3.0.1' }).prop('features')).toHaveLength(2)
+    expect(component.find({ version: '3.0.2' }).prop('features')).toHaveLength(1)
+  })
+
+  it('should order groups by version', () => {
+    component.setProps({ changelog: getChangelog('unordered') })
+
+    expect(component.find('VersionGroup').at(0).prop('version')).toEqual('3.0.1')
+    expect(component.find('VersionGroup').at(1).prop('version')).toEqual('3.0.2')
+  })
+
+  it('should filter features if a version is provied', () => {
+    component.setProps({ version: '3.0.1', changelog: getChangelog('multiple') })
+
+    expect(component.find('VersionGroup')).toHaveLength(1)
+  })
 })
 
 function getChangelog(filename) {
