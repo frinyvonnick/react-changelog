@@ -4,13 +4,41 @@ import Enzyme, { mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { readFileSync } from 'fs'
 import path from 'path'
+import ChangeLogModalContainer from './ChangeLogModal.container'
 import ChangeLogModal from './ChangeLogModal'
 
 Enzyme.configure({ adapter: new Adapter() })
 
-let resolver
-let fetchCalled = getNewPromise()
-global.fetch = mockFetch
+global.fetch = jest.fn()
+
+describe('ChangeLogModalContainer', () => {
+  let component
+  const changelog = 'Some feature'
+  const url = 'http://some-url.com'
+
+  beforeEach(() => {
+    component = mount(<ChangeLogModalContainer />)
+  })
+
+  it('should passed changelog directly if provided', () => {
+    component.setProps({ changelog })
+
+    expect(component.children().find({ changelog }).exists()).toBe(true)
+  })
+
+  it('should passed changelog directly if provided even if url is provided', () => {
+    component.setProps({ changelog, url })
+
+    expect(global.fetch).not.toHaveBeenCalled()
+    expect(component.children().find({ changelog }).exists()).toBe(true)
+  })
+
+  it('should fetch changelog if url is provided and changelog isn\'t', () => {
+    component.setProps({ url })
+
+    expect(global.fetch).toHaveBeenCalledWith(url)
+  })
+})
 
 describe('ChangeLogModal', () => {
   let component
@@ -18,53 +46,20 @@ describe('ChangeLogModal', () => {
 
   beforeEach(() => {
     component = mount(<ChangeLogModal {...props} />)
-    mockFetchingChangelog(component)
   })
 
   it('should display without error', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should display changelog passed as props', () => {
+  it('should display changelog when passed as props', () => {
     component.setProps({ changelog: getChangelog('basic') })
 
     expect(component.contains('Some brand new feature')).toBe(true)
   })
-
-  it('should display changelog retrieved from an url', async () => {
-    await setChangelogUrl('/markdowns/basic.md')
-
-    expect(component.contains('Some brand new feature')).toBe(true)
-  })
-
-  async function setChangelogUrl(url) {
-    component.setProps({ url })
-    await fetchCalled
-    component.update()
-  }
 })
-
-function mockFetchingChangelog(component) {
-  const instance = component.instance()
-  const fetchChangelogImpl = instance.fetchChangelog
-  instance.fetchChangelog = jest.fn().mockImplementation(async (url) => {
-    await fetchChangelogImpl.bind(instance)(url)
-    resolver()
-    fetchCalled = getNewPromise()
-  })
-}
-
-function mockFetch(url) {
-  return {
-    text: () => Promise.resolve(getChangelog(path.basename(url, '.md'))),
-    ok: true,
-  }
-}
 
 function getChangelog(filename) {
   return readFileSync(path.join(__dirname, `../../storybook/stories/markdowns/${filename}.md`)).toString()
 }
 
-function getNewPromise() {
-  return new Promise((resolve) => { resolver = resolve })
-}

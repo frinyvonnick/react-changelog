@@ -1,1 +1,1 @@
-export { default } from './ChangeLogModal'
+export { default } from './ChangeLogModal.container'

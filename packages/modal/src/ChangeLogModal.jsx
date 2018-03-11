@@ -13,7 +13,6 @@ export default class ChangeLogModal extends Component {
   static propTypes = {
     version: string,
     appElement: string,
-    url: string,
     title: string,
     changelog: string,
   }
@@ -22,19 +21,11 @@ export default class ChangeLogModal extends Component {
     version: undefined,
     appElement: undefined,
     title: 'New things',
-    url: undefined,
     changelog: undefined,
   }
 
   state = {
-    changelog: undefined,
     open: false,
-  }
-
-  async componentWillMount() {
-    if (this.props.url) {
-      this.fetchChangelog(this.props.url)
-    }
   }
 
   componentDidMount() {
@@ -42,18 +33,6 @@ export default class ChangeLogModal extends Component {
     if (this.props.appElement) {
       ReactModal.setAppElement(this.props.appElement)
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.url && this.props.url !== nextProps.url) {
-      this.fetchChangelog(nextProps.url)
-    }
-  }
-
-  fetchChangelog = async (url) => {
-    const res = await fetch(url)
-    const changelog = await res.text()
-    this.setState({ changelog })
   }
 
   formatMarkdown = (rawMarkdown) => {
@@ -87,7 +66,7 @@ ${group.map(feature => feature.body).join('')}
 
   render() {
     const { title, changelog } = this.props
-    const formattedChangelog = this.formatMarkdown(changelog || this.state.changelog)
+    const formattedChangelog = this.formatMarkdown(changelog)
 
     return (
       <ReactModal
