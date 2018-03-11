@@ -26,7 +26,7 @@ describe('ChangeLogModal', () => {
   })
 
   it('should display changelog passed as props', () => {
-    component.setProps({ changelog: getChangelogFileContent('basic') })
+    component.setProps({ changelog: getChangelog('basic') })
 
     expect(component.contains('Some brand new feature')).toBe(true)
   })
@@ -59,14 +59,14 @@ function mockFetch(url) {
     text: () => {
       const parts = url.split('/')
       const filename = parts[parts.length - 1].split('.')[0]
-      const content = getChangelogFileContent(filename)
+      const content = getChangelog(filename)
       return Promise.resolve(content)
     },
     ok: true,
   }
 }
 
-function getChangelogFileContent(filename) {
+function getChangelog(filename) {
   return readFileSync(path.join(__dirname, `../../storybook/stories/markdowns/${filename}.md`)).toString()
 }
 
