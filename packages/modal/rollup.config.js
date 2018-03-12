@@ -17,6 +17,7 @@ export default {
     'react-modal',
     'prop-types',
     'lodash',
+    'lodash/fp',
     'front-matter',
     'semver-compare',
   ],
