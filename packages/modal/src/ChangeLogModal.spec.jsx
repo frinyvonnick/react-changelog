@@ -17,6 +17,10 @@ jest.mock('react-modal', () => {
 Enzyme.configure({ adapter: new Adapter() })
 
 global.fetch = jest.fn()
+global.localStorage = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+}
 
 describe('ChangeLogModalContainer', () => {
   let component
@@ -123,10 +127,32 @@ describe('ChangeLogModal', () => {
     expect(component.find('VersionGroup').at(1).prop('version')).toEqual('3.0.2')
   })
 
-  it('should filter features if a version is provied', () => {
-    component.setProps({ version: '3.0.1', changelog: getChangelog('multiple') })
+  it('should filter features by major version provided as props if no version was found in localstorage', () => {
+    component.setProps({ version: '3.0.2', changelog: getChangelog('filter') })
 
-    expect(component.find('VersionGroup')).toHaveLength(1)
+    expect(component.find('VersionGroup').length).toEqual(2)
+  })
+
+  it('should store version provided as props in localstorage', () => {
+    component.setProps({ version: '3.0.1', changelog: getChangelog('filter') })
+
+    expect(localStorage.setItem).toHaveBeenCalledWith('changelog-version', '3.0.1')
+  })
+  it('should store version provided as props in localstorage on update', () => {
+    component.setProps({ version: '3.0.1', changelog: getChangelog('filter') })
+
+    expect(localStorage.setItem).toHaveBeenCalledWith('changelog-version', '3.0.1')
+
+    component.setProps({ version: '3.0.2', changelog: getChangelog('filter') })
+
+    expect(localStorage.setItem).toHaveBeenCalledWith('changelog-version', '3.0.2')
+  })
+
+  it('should filter with version stored in localstorage if found', () => {
+    localStorage.getItem.mockImplementation(() => '3.0.1')
+    component.setProps({ version: '3.0.2', changelog: getChangelog('filter') })
+
+    expect(component.find('VersionGroup').length).toEqual(1)
   })
 })
 

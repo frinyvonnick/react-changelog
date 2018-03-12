@@ -33,6 +33,15 @@ export default class ChangeLogModal extends Component {
     if (this.props.appElement) {
       ReactModal.setAppElement(this.props.appElement)
     }
+    if (this.props.version) {
+      localStorage.setItem('changelog-version', this.props.version)
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.version) {
+      localStorage.setItem('changelog-version', this.props.version)
+    }
   }
 
   formatMarkdown = (rawMarkdown) => {
@@ -46,7 +55,30 @@ export default class ChangeLogModal extends Component {
       fmFeatures
         .filter((f) => {
           if (!this.props.version) return true
-          if (cmp(f.attributes.version, this.props.version) > 0) return true
+
+          const storedVersion = localStorage.getItem('changelog-version')
+          const hasStoredVersion = Boolean(storedVersion)
+          const majorVersion = `${this.props.version.split('.')[0]}.0.0`
+
+          const compare = baseVersion => versionToCompare => cmp(baseVersion, versionToCompare)
+          const compareToFeature = compare(f.attributes.version)
+          const isSuperiorToFeature = versionToCompare => compareToFeature(versionToCompare) > 0
+
+          const isSuperiorToMajorVersion = isSuperiorToFeature(majorVersion)
+          const isInferiorOrEqualToProvidedVersion = compareToFeature(this.props.version) <= 0
+
+          if (
+            !hasStoredVersion &&
+            isSuperiorToMajorVersion &&
+            isInferiorOrEqualToProvidedVersion
+          ) return true
+
+          if (
+            hasStoredVersion &&
+            isSuperiorToFeature(storedVersion) &&
+            isInferiorOrEqualToProvidedVersion
+          ) return true
+
           return false
         })
         .sort((a, b) => cmp(a.attributes.version, b.attributes.version)),
