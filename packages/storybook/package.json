@@ -7,7 +7,6 @@
     "prestart": "yarn install && lerna run --scope @react-changelog/modal build",
     "start": "concurrently \"yarn serve\" \"yarn storybook\"",
     "lint": "eslint --ext .jsx,.js stories",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "serve": "cd ./stories && serve"
   },

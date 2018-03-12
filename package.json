@@ -3,7 +3,8 @@
   "name": "react-changelog",
   "scripts": {
     "start": "lerna run --stream start",
-    "lint": "lerna run --stream lint"
+    "lint": "lerna run --stream lint",
+    "test": "lerna run --stream test"
   },
   "devDependencies": {
     "lerna": "2.9.0"
