@@ -2,9 +2,9 @@ import React, { Component, Fragment } from 'react'
 import { string, arrayOf, shape } from 'prop-types'
 import ReactModal from 'react-modal'
 import Markdown from 'react-markdown'
-import fm from 'front-matter'
-import { chunk, groupBy, map, isString } from 'lodash'
-import cmp from 'semver-compare'
+import frontMatterParser from 'front-matter'
+import { groupBy, map, isString } from 'lodash'
+import { splitMarkdown, hasMarkdownMetaData, versionPredicate, sortBy } from './utils'
 
 import src from './close.png'
 import './ChangeLogModal.css'
@@ -33,56 +33,30 @@ export default class ChangeLogModal extends Component {
     if (this.props.appElement) {
       ReactModal.setAppElement(this.props.appElement)
     }
-    if (this.props.version) {
-      localStorage.setItem('changelog-version', this.props.version)
-    }
+    this.setStoredVersion(this.props.version)
   }
 
   componentDidUpdate() {
-    if (this.props.version) {
-      localStorage.setItem('changelog-version', this.props.version)
+    this.setStoredVersion(this.props.version)
+  }
+
+  setStoredVersion = (version) => {
+    if (version) {
+      localStorage.setItem('changelog-version', version)
     }
   }
 
   formatMarkdown = (rawMarkdown) => {
-    const delimiter = '---'
-    if (!rawMarkdown || !rawMarkdown.includes(delimiter)) return rawMarkdown
-    const parts = chunk(rawMarkdown.split(delimiter).splice(1), 2).map(([metadata, body]) => `${delimiter}${metadata}${delimiter}${body}`)
+    if (!rawMarkdown || !hasMarkdownMetaData(rawMarkdown)) return rawMarkdown
 
-    const fmFeatures = parts.map(fm)
+    const versionPath = 'attributes.version'
 
     return groupBy(
-      fmFeatures
-        .filter((f) => {
-          if (!this.props.version) return true
-
-          const storedVersion = localStorage.getItem('changelog-version')
-          const hasStoredVersion = Boolean(storedVersion)
-          const majorVersion = `${this.props.version.split('.')[0]}.0.0`
-
-          const compare = baseVersion => versionToCompare => cmp(baseVersion, versionToCompare)
-          const compareToFeature = compare(f.attributes.version)
-          const isSuperiorToFeature = versionToCompare => compareToFeature(versionToCompare) > 0
-
-          const isSuperiorToMajorVersion = isSuperiorToFeature(majorVersion)
-          const isInferiorOrEqualToProvidedVersion = compareToFeature(this.props.version) <= 0
-
-          if (
-            !hasStoredVersion &&
-            isSuperiorToMajorVersion &&
-            isInferiorOrEqualToProvidedVersion
-          ) return true
-
-          if (
-            hasStoredVersion &&
-            isSuperiorToFeature(storedVersion) &&
-            isInferiorOrEqualToProvidedVersion
-          ) return true
-
-          return false
-        })
-        .sort((a, b) => cmp(a.attributes.version, b.attributes.version)),
-      f => f.attributes.version,
+      splitMarkdown(rawMarkdown)
+        .map(frontMatterParser)
+        .filter(versionPredicate(this.props.version))
+        .sort(sortBy(versionPath)),
+      versionPath,
     )
   }
 
