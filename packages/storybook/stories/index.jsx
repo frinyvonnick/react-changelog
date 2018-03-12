@@ -45,3 +45,7 @@ stories.add('filtering by version', () => (
 stories.add('sorting by version', () => (
   <ChangeLogModal url="/markdowns/unordered.md" />
 ))
+
+stories.add('cheatsheet', () => (
+  <ChangeLogModal url="/markdowns/cheatsheet.md" />
+))
