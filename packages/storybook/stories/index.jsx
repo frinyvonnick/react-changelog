@@ -38,9 +38,19 @@ stories.add('with multiple feature', () => (
   <ChangeLogModal url="/markdowns/multiple.md" />
 ))
 
-stories.add('filtering by version', () => (
-  <ChangeLogModal version="3.0.1" url="/markdowns/multiple.md" />
-))
+stories.add('filtering by major version', () => {
+  localStorage.removeItem('changelog-version')
+  return (
+    <ChangeLogModal version="3.0.2" url="/markdowns/filter.md" />
+  )
+})
+
+stories.add('filtering by stored version', () => {
+  localStorage.setItem('changelog-version', '3.0.1')
+  return (
+    <ChangeLogModal version="3.0.2" url="/markdowns/filter.md" />
+  )
+})
 
 stories.add('sorting by version', () => (
   <ChangeLogModal url="/markdowns/unordered.md" />

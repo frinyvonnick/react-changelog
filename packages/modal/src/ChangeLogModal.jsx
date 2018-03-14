@@ -33,11 +33,6 @@ export default class ChangeLogModal extends Component {
     if (this.props.appElement) {
       ReactModal.setAppElement(this.props.appElement)
     }
-    this.setStoredVersion(this.props.version)
-  }
-
-  componentDidUpdate() {
-    this.setStoredVersion(this.props.version)
   }
 
   setStoredVersion = (version) => {
@@ -51,13 +46,16 @@ export default class ChangeLogModal extends Component {
 
     const versionPath = 'attributes.version'
 
-    return groupBy(
+    const groupedFeatures = groupBy(
       splitMarkdown(rawMarkdown)
         .map(frontMatterParser)
         .filter(versionPredicate(this.props.version))
         .sort(sortBy(versionPath)),
       versionPath,
     )
+
+    this.setStoredVersion(this.props.version)
+    return groupedFeatures
   }
 
   openModal = () => this.setState({ open: true })

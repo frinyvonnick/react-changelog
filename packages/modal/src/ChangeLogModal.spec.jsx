@@ -72,6 +72,7 @@ describe('ChangeLogModal', () => {
 
   beforeEach(() => {
     component = mount(<ChangeLogModal {...props} />)
+    localStorage.setItem.mockClear()
   })
 
   it('should close when user click on close button', () => {
